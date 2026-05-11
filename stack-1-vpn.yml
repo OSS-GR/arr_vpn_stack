@@ -1,0 +1,38 @@
+version: '3.3'
+services:
+  vpn:
+    image: qmcgaw/gluetun:latest
+    container_name: vpn_gluetun_nordvpn
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=nordvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - SERVER_COUNTRIES=United States
+      - SERVER_REGIONS=The Americas
+      - SERVER_CATEGORIES=P2P
+      - TZ=America/New_York
+    ports:
+      - 8080:8080      # qbittorrent webui
+      - 9696:9696      # prowlarr
+      - 58261:58261    # qbittorrent torrenting
+      - 58261:58261/udp
+      - 8989:8989      # sonarr
+      - 9191:9191      # sonarr-anime
+      - 6767:6767      # bazarr
+      - 7878:7878      # radarr
+      - 8787:8787      # readarr (reserved)
+      - 5055:5055      # jellyseerr
+      - 8191:8191      # flaresolverr
+      - 8085:80
+      - 5454:5454
+      - 8265:8265
+      - 8266:8266
+      - 8267:8267
+      - 8268:8268
+    sysctls:
+      - net.ipv6.conf.all.disable_ipv6=1
+    restart: unless-stopped

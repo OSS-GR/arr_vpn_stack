@@ -1,0 +1,123 @@
+version: '3.3'
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent1
+    environment:
+      - PUID=1000
+      - PGID=1001
+      - TZ=America/New_York
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=58261
+    volumes:
+      - /portainer/Files/AppData/Config/qBittorrent:/config
+      - /mnt/manshare:/data
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: Prowlarr
+    environment:
+      - PUID=1000
+      - PGID=100
+      - HOME=/root
+      - TERM=xterm
+      - S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
+      - XDG_CONFIG_HOME=/config/xdg
+    volumes:
+      - /portainer/Files/AppData/Config/Prowlarr:/config
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+      - LOG_HTML=false
+      - CAPTCHA_SOLVER=none
+      - TZ=Etc/UTC
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=Etc/UTC
+      - UMASK=002
+    volumes:
+      - /portainer/Files/AppData/Config/Sonarr:/config
+      - /mnt/manshare:/data
+      - /dev/rtc:/dev/rtc
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  sonarr_anime:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr_anime
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=Etc/UTC
+      - UMASK=002
+      - SONARR__PORT=9191
+      - SONARR__URLBASE=/anime
+    volumes:
+      - /portainer/Files/AppData/Config/Sonarr_Anime:/config
+      - /mnt/manshare:/data
+      - /dev/rtc:/dev/rtc
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: Radarr
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=Etc/UTC
+      - UMASK=002
+    volumes:
+      - /portainer/Files/AppData/Config/Radarr:/config
+      - /mnt/manshare:/data
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  bazarr:
+    image: linuxserver/bazarr:latest
+    container_name: Bazarr
+    environment:
+      - PUID=1000
+      - PGID=100
+      - TZ=Etc/UTC
+      - UMASK=002
+    volumes:
+      - /portainer/Files/AppData/Config/Bazarr:/config
+      - /mnt/manshare:/data
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  jellyseerr:
+    image: fallenbagel/jellyseerr:latest
+    container_name: jellyseerr
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Etc/UTC
+    volumes:
+      - /portainer/Files/AppData/Config/Jellyseerr-New:/app/config
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: unless-stopped
+
+  notifiarr:
+    image: golift/notifiarr
+    container_name: notifiarr
+    volumes:
+      - /portainer/Files/AppData/Config/notifiarr:/config
+      - /var/run/utmp:/var/run/utmp
+      - /etc/machine-id:/etc/machine-id
+    network_mode: "container:vpn_gluetun_nordvpn"
+    restart: on-failure

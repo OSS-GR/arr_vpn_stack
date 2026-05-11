@@ -1,0 +1,12 @@
+version: '3.3'
+services:
+  bark-server:
+    image: finab/bark-server
+    container_name: bark-server
+    environment:
+      - TZ=America/New_York
+    volumes:
+      - /portainer/Files/AppData/Config/bark:/data
+    ports:
+      - "8446:8080"
+    restart: always
