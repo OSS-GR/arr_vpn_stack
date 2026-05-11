@@ -15,7 +15,7 @@ services:
       - SERVER_REGIONS=The Americas
       - SERVER_CATEGORIES=P2P
       - TZ=America/New_York
-      - DNS_UPDATE_PERIOD=1h
+      - DNS_UPDATE_PERIOD=1m
     ports:
       - 8080:8080       # qbittorrent — webui
       - 9696:9696       # prowlarr — webui
