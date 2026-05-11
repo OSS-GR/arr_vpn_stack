@@ -15,24 +15,20 @@ services:
       - SERVER_REGIONS=The Americas
       - SERVER_CATEGORIES=P2P
       - TZ=America/New_York
+      - DNS_UPDATE_PERIOD=1h
     ports:
-      - 8080:8080      # qbittorrent webui
-      - 9696:9696      # prowlarr
-      - 58261:58261    # qbittorrent torrenting
-      - 58261:58261/udp
-      - 8989:8989      # sonarr
-      - 9191:9191      # sonarr-anime
-      - 6767:6767      # bazarr
-      - 7878:7878      # radarr
-      - 8787:8787      # readarr (reserved)
-      - 5055:5055      # jellyseerr
-      - 8191:8191      # flaresolverr
-      - 8085:80
-      - 5454:5454
-      - 8265:8265
-      - 8266:8266
-      - 8267:8267
-      - 8268:8268
+      - 8080:8080       # qbittorrent — webui
+      - 9696:9696       # prowlarr — webui
+      - 58261:58261     # qbittorrent — torrenting (TCP)
+      - 58261:58261/udp # qbittorrent — torrenting (UDP)
+      - 8989:8989       # sonarr — webui
+      - 9191:9191       # sonarr-anime — webui
+      - 6767:6767       # bazarr — webui
+      - 7878:7878       # radarr — webui
+      - 8787:8787       # readarr — webui (reserved)
+      - 5055:5055       # jellyseerr — webui
+      - 8191:8191       # flaresolverr — proxy
+      - 5454:5454       # notifiarr — webui
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
     restart: unless-stopped
