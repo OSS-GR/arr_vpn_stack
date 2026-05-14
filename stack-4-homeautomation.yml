@@ -1,0 +1,17 @@
+version: '3.3'
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: "ghcr.io/home-assistant/home-assistant:stable"
+    volumes:
+      - /portainer/Files/AppData/Config/homeassistant:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /run/dbus:/run/dbus:ro
+    restart: unless-stopped
+    privileged: true
+    # host networking is required for Kasa/TP-Link UDP broadcast discovery (ports 9999, 20002)
+    # and for other HA LAN protocols (mDNS, UPnP, Zeroconf). Do not use bridge or the VPN
+    # container network here — HA must see the LAN directly.
+    network_mode: host
+    environment:
+      TZ: America/New_York
