@@ -21,14 +21,63 @@ services:
       - 9696:9696       # prowlarr — webui
       - 58261:58261     # qbittorrent — torrenting (TCP)
       - 58261:58261/udp # qbittorrent — torrenting (UDP)
-      - 8989:8989       # sonarr — webui
-      - 9191:9191       # sonarr-anime — webui
-      - 6767:6767       # bazarr — webui
-      - 7878:7878       # radarr — webui
-      - 8787:8787       # readarr — webui (reserved)
-      - 5055:5055       # jellyseerr — webui
       - 8191:8191       # flaresolverr — proxy
-      - 5454:5454       # notifiarr — webui
     sysctls:
       - net.ipv6.conf.all.disable_ipv6=1
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8000/v1/vpn/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent1
+    environment:
+      - PUID=1000
+      - PGID=1001
+      - TZ=America/New_York
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=58261
+    volumes:
+      - /portainer/Files/AppData/Config/qBittorrent:/config
+      - /mnt/manshare:/data
+    network_mode: "container:vpn_gluetun_nordvpn"
+    depends_on:
+      vpn:
+        condition: service_healthy
+    restart: unless-stopped
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:develop
+    container_name: Prowlarr
+    environment:
+      - PUID=1000
+      - PGID=100
+      - HOME=/root
+      - TERM=xterm
+      - S6_CMD_WAIT_FOR_SERVICES_MAXTIME=0
+      - XDG_CONFIG_HOME=/config/xdg
+    volumes:
+      - /portainer/Files/AppData/Config/Prowlarr:/config
+    network_mode: "container:vpn_gluetun_nordvpn"
+    depends_on:
+      vpn:
+        condition: service_healthy
+    restart: unless-stopped
+
+  flaresolverr:
+    image: ghcr.io/flaresolverr/flaresolverr:latest
+    container_name: flaresolverr
+    environment:
+      - LOG_LEVEL=info
+      - LOG_HTML=false
+      - CAPTCHA_SOLVER=none
+      - TZ=Etc/UTC
+    network_mode: "container:vpn_gluetun_nordvpn"
+    depends_on:
+      vpn:
+        condition: service_healthy
     restart: unless-stopped
