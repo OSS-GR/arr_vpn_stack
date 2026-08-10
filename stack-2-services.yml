@@ -67,4 +67,6 @@ services:
       - /etc/machine-id:/etc/machine-id
     ports:
       - 5454:5454
+    mem_limit: 1g
+    memswap_limit: 1g
     restart: unless-stopped
